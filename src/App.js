@@ -1,25 +1,35 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Disc from './objects/disc';
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      first: [],
+      second: [],
+      third: [],
+      num_discs: 3,
+    }
+  }
+
+  componentDidMount(){
+    this.initializeGame();
+  }
+
+  initializeGame = () =>{
+    let disc1 = new Disc(3), disc2 = new Disc(2), disc3 = new Disc(1);
+    this.state.first.push(disc1);
+    this.state.first.push(disc2);
+    this.state.first.push(disc3);
+
+    console.log(this.state.first);
+  }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <h1>Towers of Hanoi</h1>
       </div>
     );
   }
