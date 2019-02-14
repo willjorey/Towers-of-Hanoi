@@ -1,30 +1,37 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Disc from './objects/disc';
 
 class App extends Component {
   constructor(props){
     super(props);
-    let disc1 = new Disc(3), disc2 = new Disc(2), disc3 = new Disc(1), disc0 = new Disc(0);
     this.state = {
-      board: [[disc1,disc2,disc3],[],[disc2]],
+      board: [[],[],[]],
       num_discs: 3,
+      moves: 0,
     }
   }
 
   componentDidMount(){
-    this.moveDisc(2, this.state.board[0], this.state.board[2])
+    this.initializeGame();
+    // this.moveDisc(2, this.state.board[0], this.state.board[2]);
+    // this.moveDisc(1, this.state.board[0], this.state.board[1]);
+    // this.moveDisc(0, this.state.board[2], this.state.board[1]);
+    // this.moveDisc(0, this.state.board[0], this.state.board[2]);
+    // this.moveDisc(1, this.state.board[1], this.state.board[0]);
+    // this.moveDisc(0, this.state.board[1], this.state.board[2]);
+    // this.moveDisc(0, this.state.board[0], this.state.board[2]);
   }
 
   initializeGame = () =>{
     let disc1 = new Disc(3), disc2 = new Disc(2), disc3 = new Disc(1);
-    var list = [];
-    list.push(disc1);
-    list.push(disc2);
-    list.push(disc3);
+    var list = [...this.state.board];
+    list[0].push(disc1);
+    list[0].push(disc2);
+    list[0].push(disc3);
     this.setState({
-      board: [...this.state.board, this.state.board[0] = list]
+      board: list,
+      input: '',
     })
   };
 
@@ -52,47 +59,66 @@ class App extends Component {
           p2.push(p1.pop());
         }
       }
-      console.log(this.state.board)
     }
+    console.log(this.state.board)
+
   }
 
   renderDiscs = (list) =>{
+    console.log(list)
+    var copy = list.slice().reverse()
     return(
       <div id='platform'>
-        {list.map((disc,i) =>{
+        {copy.map((disc,i) =>{
           return(
-            <div key={i}>
-            <svg>
-              <rect
-              x='10'
-              y='10'
-              width="100"
-              height="50"
-              
-              stroke="blue"
-              strokeWidth="4"
-              fill="lightblue">
-              </rect>
-            </svg>
+            <div key={i} id='disc' style={{width: disc.size * 100}}>
             </div>
             )
         })}
       </div>
     )
   }
+
+  inputChange = (event) =>{
+    this.setState({
+      input: event.target.value
+    })
+  }
+
+  execute = () =>{
+    let arr = this.state.input.split(" ");
+    let board = this.state.board;
+    console.log(arr);
+    this.moveDisc(arr[0], board[arr[1]], board[arr[2]]);
+    this.setState({
+      input: ''
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Towers of Hanoi</h1>
         <div id='board'>
-          <table>
-          <tr>
-            <td><div id='platform-container'>{this.renderDiscs(this.state.board[0])}</div></td>
-            <td><div id='platform-container'>{this.renderDiscs(this.state.board[1])}</div></td>
-            <td><div id='platform-container'>{this.renderDiscs(this.state.board[1])}</div></td>
-          </tr>
-          </table>
+            <table>
+              <tbody>
+              <tr>
+                <td>{this.renderDiscs(this.state.board[0])}</td>
+                <td>{this.renderDiscs(this.state.board[1])}</td>
+                <td>{this.renderDiscs(this.state.board[2])}</td>
+              </tr>
+              <tr>
+                <td><div style={{width:'400px', height: '25px', backgroundColor: 'black'}}/></td>
+                <td><div style={{width:'400px', height: '25px', backgroundColor: 'black'}}/></td>
+                <td><div style={{width:'400px', height: '25px', backgroundColor: 'black'}}/></td>
+              </tr>
+              </tbody>
+            </table>
         </div>
+        <br/>
+        <h3>Input Commands</h3>
+        <textarea style={{width: '300px'}} type='text' onChange={this.inputChange}/>
+        <input type='submit' value='Submit' onClick={() => this.execute()}/>
       </div>
     );
   }
