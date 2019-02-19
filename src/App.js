@@ -9,6 +9,7 @@ class App extends Component {
       board: [[],[],[]],
       num_discs: 3,
       moves: 0,
+      error: '',
     }
   }
 
@@ -24,54 +25,55 @@ class App extends Component {
   }
 
   initializeGame = () =>{
-    let disc1 = new Disc(3), disc2 = new Disc(2), disc3 = new Disc(1);
-    var list = [...this.state.board];
-    list[0].push(disc1);
-    list[0].push(disc2);
-    list[0].push(disc3);
+    var list = [[],[],[]];
+    for ( let i = 0; i < this.state.num_discs; i++){
+      list[0].push(new Disc(this.state.num_discs - i));
+    }
     this.setState({
       board: list,
       input: '',
+      moves: 0,
     })
   };
 
-  moveDisc = (disc_index, p1, p2) =>{
-    //disc_index is the index of the disc we're moving from the p1
+  new_moveDisc = (p1, p2) =>{
     // p1 is the list of discs contiaining  the disc we want to move
     // p2 is the destination platform of the disc we're moving
 
-    // Check if we can move the disc. ie no other disc is on top
-    if( p1[disc_index + 1] != null)
-      console.log("can't move disc");
-    else{
-      console.log('movable');
-      // Check the disc size of the platform we're moving too
-
-      // No discs on platform
-      var disc = p1[disc_index];
+    if (p1.length !== 0 ){
+    // No discs on platform
       if(p2.length === 0){
         p2.push(p1.pop())
       //At least one disc on platform, commpare sizes if the moving piece is bigger then can't move else move it
       }else{
+        var disc = p1[p1.length - 1]
         if(disc.size > p2[p2.length - 1].size){
-          console.log('Disc too big to move')
+          this.setState({
+            error:'Disc too big to move'
+          });
         }else{
           p2.push(p1.pop());
         }
       }
     }
-    console.log(this.state.board)
-
+    this.setState({
+      board: this.state.board
+    })
+  }
+  onClickCol = (index) => {
+    this.setState({
+      from: index
+    })
   }
 
   renderDiscs = (list) =>{
-    console.log(list)
     var copy = list.slice().reverse()
     return(
       <div id='platform'>
         {copy.map((disc,i) =>{
           return(
-            <div key={i} id='disc' style={{width: disc.size * 100}}>
+            <div id='disc-container' key={i}>
+              <div  id='disc' style={{backgroundColor: 'lightblue' , width: disc.size * 75}}/>
             </div>
             )
         })}
@@ -88,21 +90,34 @@ class App extends Component {
   execute = () =>{
     let arr = this.state.input.split(" ");
     let board = this.state.board;
-    console.log(arr);
-    this.moveDisc(arr[0], board[arr[1]], board[arr[2]]);
+    if (arr[1]!== undefined && arr[0] !== undefined){
+      let p1 = board[arr[0] - 1];
+      let p2 = board[arr[1] - 1]
+      this.new_moveDisc(p1 , p2);
+    }
     this.setState({
-      input: ''
+      moves: this.state.moves + 1,
     })
+
   }
 
   render() {
     return (
       <div className="App">
         <h1>Towers of Hanoi</h1>
+        <h2>Move Counter <p style={{fontSize: '50px', color: 'red'}}>{this.state.moves} </p> </h2>
+        <p>Move all the discs from Platform 1 to Platform 3 in the same order as they started in.</p>
+        <div style={{width:'500px', marginLeft:'37%'}}>
+          <h4>Rules</h4>
+          <ul style={{listStyleType: 'square'}}>
+            <li>A disc cannot be placed on top of a smaller disc</li>
+            <li>You can only move the top disc on a given platform</li>
+          </ul>
+        </div>
         <div id='board'>
             <table>
               <tbody>
-              <tr>
+              <tr id='one' style={{height: '300px'}}>
                 <td>{this.renderDiscs(this.state.board[0])}</td>
                 <td>{this.renderDiscs(this.state.board[1])}</td>
                 <td>{this.renderDiscs(this.state.board[2])}</td>
@@ -112,14 +127,26 @@ class App extends Component {
                 <td><div style={{width:'400px', height: '25px', backgroundColor: 'black'}}/></td>
                 <td><div style={{width:'400px', height: '25px', backgroundColor: 'black'}}/></td>
               </tr>
+              <tr>
+                <td>Platform 1</td>
+                <td>Platform 2</td>
+                <td>Platform 3</td>
+              </tr>
               </tbody>
             </table>
         </div>
         <br/>
+        <button style={{marginTop: '20px'}}onClick={this.initializeGame}>New Game</button>
+        <br/>
         <h3>Input Commands</h3>
-        <textarea style={{width: '300px'}} type='text' onChange={this.inputChange}/>
-        <input type='submit' value='Submit' onClick={() => this.execute()}/>
-      </div>
+        <p>To move a disc from Platform 1 to Platform 2, enter in the text area: <b style={{fontSize: '20px'}}>'1 2'</b>  then submit</p>
+        <div>
+          <textarea style={{ height: '20px', width: '300px'}} type='text' onChange={this.inputChange}/>
+          <input type='submit' value='Submit' onClick={() => this.execute()}/>
+        </div>
+        <br/>
+        <h2 style={{color: 'red'}}>{this.state.error}</h2>
+        </div>
     );
   }
 }

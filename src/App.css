@@ -1,16 +1,26 @@
 .App {
   text-align: center;
+  margin-bottom: 200px;
 }
 
 #board {
   display: inline-block;
+  margin-top: 20px;
 
 }
-#platform {
+
+table{
+  border: 1px solid black
 }
 
 #disc{
   height: 50px;
-  background-color: lightblue;
   border: 1px solid black;
+  width: 50%;
+  margin: 0 auto;
+}
+
+
+td{
+  vertical-align: bottom;
 }
