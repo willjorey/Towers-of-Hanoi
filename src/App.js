@@ -22,18 +22,19 @@ class App extends Component {
     // this.moveDisc(1, this.state.board[1], this.state.board[0]);
     // this.moveDisc(0, this.state.board[1], this.state.board[2]);
     // this.moveDisc(0, this.state.board[0], this.state.board[2]);
-  }
-
+  };
+  
   initializeGame = () =>{
     var list = [[],[],[]];
-    for ( let i = 0; i < this.state.num_discs; i++){
-      list[0].push(new Disc(this.state.num_discs - i));
+    for ( let i = 0; i < 3; i++){
+      list[0].push(new Disc(3 - i));
     }
     this.setState({
       board: list,
       input: '',
       moves: 0,
-    })
+      num_discs: 3,
+    }, );
   };
 
   new_moveDisc = (p1, p2) =>{
@@ -94,11 +95,36 @@ class App extends Component {
       let p1 = board[arr[0] - 1];
       let p2 = board[arr[1] - 1]
       this.new_moveDisc(p1 , p2);
+      this.setState({
+        moves: this.state.moves + 1,
+      })
     }
-    this.setState({
-      moves: this.state.moves + 1,
-    })
 
+  }
+
+  increment = () =>{
+    var list = [...this.state.board[0]];
+    list.reverse();
+    list.push(new Disc(this.state.num_discs + 1));
+    list.reverse();
+    var b1 = [list,[],[]];
+    this.setState({
+      num_discs: this.state.num_discs + 1,
+      board: b1
+    })
+  }
+
+  decrement = () =>{
+    var discs = this.state.num_discs;
+    var list = this.state.board[0];
+    list = list.slice(1)
+    var b1 = [list,[],[]];
+    if ( discs - 1 !== 0 ){
+      this.setState({
+        num_discs: discs - 1,
+        board: b1
+      })
+    }
   }
 
   render() {
@@ -114,7 +140,13 @@ class App extends Component {
             <li>You can only move the top disc on a given platform</li>
           </ul>
         </div>
+
         <div id='board'>
+        <div>
+          <p style={{display: 'inline', padding: '15px', fontSize: '30px'}}>Number of Discs: {this.state.num_discs}</p>
+          <button style={{display: 'inline'}} onClick={this.increment}>+</button>
+          <button style={{display: 'inline'}} onClick={this.decrement}>-</button>
+        </div>
             <table>
               <tbody>
               <tr id='one' style={{height: '300px'}}>
@@ -137,6 +169,7 @@ class App extends Component {
         </div>
         <br/>
         <button style={{marginTop: '20px'}}onClick={this.initializeGame}>New Game</button>
+        
         <br/>
         <h3>Input Commands</h3>
         <p>To move a disc from Platform 1 to Platform 2, enter in the text area: <b style={{fontSize: '20px'}}>'1 2'</b>  then submit</p>
