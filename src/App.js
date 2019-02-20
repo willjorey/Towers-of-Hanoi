@@ -131,7 +131,6 @@ class App extends Component {
     return (
       <div className="App">
         <h1>Towers of Hanoi</h1>
-        <h2>Move Counter <p style={{fontSize: '50px', color: 'red'}}>{this.state.moves} </p> </h2>
         <p>Move all the discs from Platform 1 to Platform 3 in the same order as they started in.</p>
         <div style={{width:'500px', marginLeft:'37%'}}>
           <h4>Rules</h4>
@@ -146,6 +145,7 @@ class App extends Component {
           <p style={{display: 'inline', padding: '15px', fontSize: '30px'}}>Number of Discs: {this.state.num_discs}</p>
           <button style={{display: 'inline'}} onClick={this.increment}>+</button>
           <button style={{display: 'inline'}} onClick={this.decrement}>-</button>
+          <p style={{marginLeft: '30px', padding: '20px' ,display: 'inline', fontSize: '30px'}}>Move Counter: {this.state.moves} </p>
         </div>
             <table>
               <tbody>
