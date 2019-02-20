@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/Towers-of-Hanoi/static/css/main.e9bbdbac.chunk.css"
   },
   {
-    "revision": "6d7940f4563dcc13a477382e54612a14",
+    "revision": "c4666befe5cffb38849837ba49fdf92c",
     "url": "/Towers-of-Hanoi/index.html"
   }
 ];
