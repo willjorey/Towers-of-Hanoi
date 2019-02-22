@@ -5,6 +5,7 @@ import Disc from './objects/disc';
 class App extends Component {
   constructor(props){
     super(props);
+    this.initial_discs = 2;
     this.state = {
       board: [[],[],[]],
       num_discs: 3,
@@ -15,29 +16,22 @@ class App extends Component {
 
   componentDidMount(){
     this.initializeGame();
-    // this.moveDisc(2, this.state.board[0], this.state.board[2]);
-    // this.moveDisc(1, this.state.board[0], this.state.board[1]);
-    // this.moveDisc(0, this.state.board[2], this.state.board[1]);
-    // this.moveDisc(0, this.state.board[0], this.state.board[2]);
-    // this.moveDisc(1, this.state.board[1], this.state.board[0]);
-    // this.moveDisc(0, this.state.board[1], this.state.board[2]);
-    // this.moveDisc(0, this.state.board[0], this.state.board[2]);
   };
   
   initializeGame = () =>{
     var list = [[],[],[]];
-    for ( let i = 0; i < 3; i++){
-      list[0].push(new Disc(3 - i));
+    for ( let i = 0; i < this.initial_discs; i++){
+      list[0].push(new Disc(this.initial_discs - i));
     }
     this.setState({
       board: list,
       input: '',
       moves: 0,
-      num_discs: 3,
+      num_discs: this.initial_discs,
     }, );
   };
 
-  new_moveDisc = (p1, p2) =>{
+  moveDisc = (p1, p2) =>{
     // p1 is the list of discs contiaining  the disc we want to move
     // p2 is the destination platform of the disc we're moving
 
@@ -61,14 +55,20 @@ class App extends Component {
       board: this.state.board
     })
   }
-  onClickCol = (index) => {
-    this.setState({
-      from: index
-    })
+
+  solveTowers = (num, source, aux, dest)=>{
+    if (num === 1){
+      this.moveDisc(source,dest);
+      return;
+    }else{
+      this.solveTowers(num - 1, source, dest, aux);
+      this.solveTowers(num - 1, aux, source, dest);
+    }
+    console.log(this.state.board)
   }
 
   renderDiscs = (list) =>{
-    var copy = list.slice().reverse()
+    var copy = list.slice().reverse();
     return(
       <div id='platform'>
         {copy.map((disc,i) =>{
@@ -94,7 +94,7 @@ class App extends Component {
     if (arr[1]!== undefined && arr[0] !== undefined){
       let p1 = board[arr[0] - 1];
       let p2 = board[arr[1] - 1]
-      this.new_moveDisc(p1 , p2);
+      this.moveDisc(p1 , p2);
       this.setState({
         moves: this.state.moves + 1,
       })
@@ -169,6 +169,7 @@ class App extends Component {
         </div>
         <br/>
         <button style={{marginTop: '20px'}}onClick={this.initializeGame}>New Game</button>
+        <button style={{marginTop: '20px'}}onClick={() => this.solveTowers(this.state.num_discs, this.state.board[0],this.state.board[1],this.state.board[2])}>Solve</button>
         
         <br/>
         <h3>Input Commands</h3>
